@@ -1,0 +1,6 @@
+@tailwind base
+@tailwind components
+@tailwind utilities;
+
+/* input[text="text"], input[type="password"], input[type="email"]
+    @apply w-full */

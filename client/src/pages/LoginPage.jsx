@@ -3,12 +3,17 @@ import Heading from "../components/Heading";
 import { useLogin } from "../components/contexts/LoginProvider";
 import Button from "../components/Button";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
+import { useUsers } from "../components/contexts/UserContext";
 
 function LoginPage({ actionLabel, onSubmit, disabled }) {
   const { handleOpen } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+
+  const { setUser } = useUsers();
 
   const handleSubmit = useCallback(() => {
     if (disabled) return;
@@ -18,17 +23,21 @@ function LoginPage({ actionLabel, onSubmit, disabled }) {
   async function handleLoginSubmit(e) {
     e.preventDefault();
     try {
-      await axios
-        .post("http://localhost:4000/login", { email, password })
-        .then((response) => {
-          alert("Login Successful");
-          handleSubmit();
-        });
+      const response = await axios.post("http://localhost:4000/login", {
+        email,
+        password,
+      });
+      setUser(response.data);
+      alert("Login Successful");
+      setRedirect(true);
+      handleSubmit();
     } catch (error) {
       console.log(error);
       alert("Login Failed");
     }
   }
+
+  if (redirect) return <Navigate to={"/"} />;
 
   return (
     <div className="flex flex-col gap-4">

@@ -4,20 +4,20 @@ const LoginContext = createContext();
 
 function LoginProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [modalType, setModalType] = useState(null);
 
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  const handleOpen = (view) => {
+  const handleOpen = (type) => {
+    setModalType(type);
     setIsModalOpen(true);
-    setIsLogin(view === "login");
   };
 
   return (
     <LoginContext.Provider
-      value={{ isModalOpen, isLogin, handleClose, handleOpen }}
+      value={{ isModalOpen, modalType, handleClose, handleOpen }}
     >
       {children}
     </LoginContext.Provider>

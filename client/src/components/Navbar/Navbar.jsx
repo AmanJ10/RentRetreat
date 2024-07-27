@@ -1,12 +1,19 @@
+import { useLocation } from "react-router-dom";
 import Container from "../Container";
 import { useLogin } from "../contexts/LoginProvider";
 import Categories from "./Categories";
 import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
+import { useUsers } from "../contexts/UserContext";
 
 function Navbar() {
   const { handleOpen } = useLogin();
+  const location = useLocation();
+
+  const { user } = useUsers();
+
+  const showNavbar = location.pathname === "/";
 
   return (
     <div className="w-full bg-white z-10 shadow-sm">
@@ -19,7 +26,8 @@ function Navbar() {
           </div>
         </Container>
       </div>
-      <Categories />
+
+      {showNavbar && <Categories />}
     </div>
   );
 }

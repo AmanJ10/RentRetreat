@@ -10,12 +10,27 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nextui-org/date-picker": "^2.1.6",
+    "@nextui-org/react": "^2.4.6",
+    "@nextui-org/system": "^2.2.5",
+    "@nextui-org/theme": "^2.2.9",
+    "@stripe/react-stripe-js": "^2.7.3",
+    "@stripe/stripe-js": "^4.1.0",
+    "@wojtekmaj/react-daterange-picker": "^6.0.0",
     "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
+    "dayjs": "^1.11.12",
+    "firebase": "^10.12.4",
+    "framer-motion": "^11.3.8",
+    "js-cookie": "^3.0.5",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
+    "react-date-range": "^2.0.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.25.1",
+    "react-stripe-checkout": "^2.6.3",
+    "styled-components": "^6.1.12"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

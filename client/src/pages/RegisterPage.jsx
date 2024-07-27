@@ -19,11 +19,11 @@ function RegisterPage({ actionLabel, disabled, onSubmit }) {
     e.preventDefault();
     axios
       .post("http://localhost:4000/register", { name, email, password })
-      .then((response) => {
+      .then(() => {
         handleSubmit();
         alert("Registration Successful. Now you can log in");
       })
-      .catch((e) => {
+      .catch(() => {
         alert("Registration failed. Please try again later.");
       });
   }
