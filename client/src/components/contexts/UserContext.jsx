@@ -9,7 +9,7 @@ function UserProvider({ children }) {
 
   useEffect(function () {
     if (!user) {
-      axios.get("http://localhost:4000/profile").then(({ data }) => {
+      axios.get("https://rentretreat.onrender.com/profile").then(({ data }) => {
         setUser(data);
         setReady(true);
       });

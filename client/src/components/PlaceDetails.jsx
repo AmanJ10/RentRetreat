@@ -24,7 +24,7 @@ function PlaceDetails() {
       try {
         if (location.pathname.startsWith("/places/")) {
           const response = await axios.get(
-            `http://localhost:4000/places/${id}`
+            `https://rentretreat.onrender.com/places/${id}`
           );
           setPlace(response.data);
         }

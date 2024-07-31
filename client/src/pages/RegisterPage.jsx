@@ -18,7 +18,11 @@ function RegisterPage({ actionLabel, disabled, onSubmit }) {
   async function registerUser(e) {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/register", { name, email, password })
+      .post("https://rentretreat.onrender.com/register", {
+        name,
+        email,
+        password,
+      })
       .then(() => {
         handleSubmit();
         alert("Registration Successful. Now you can log in");

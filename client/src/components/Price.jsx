@@ -72,7 +72,7 @@ function Price({ price, place, bookingInfo }) {
 
     try {
       const res = await fetch(
-        "http://localhost:4000/api/create-checkout-session",
+        "https://rentretreat.onrender.com/api/create-checkout-session",
         {
           method: "POST",
           headers: {

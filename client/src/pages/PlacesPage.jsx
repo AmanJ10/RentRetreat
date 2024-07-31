@@ -41,7 +41,7 @@ function PlacesPage() {
   async function createPlace(e) {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/addPlace", {
+      .post("https://rentretreat.onrender.com/addPlace", {
         title,
         address,
         addedPhotos,
@@ -83,7 +83,9 @@ function PlacesPage() {
 
   const fetchPlaces = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/places");
+      const response = await axios.get(
+        "https://rentretreat.onrender.com/places"
+      );
       console.log("Places fetched:", response.data);
       setPlaces(response.data);
     } catch (error) {

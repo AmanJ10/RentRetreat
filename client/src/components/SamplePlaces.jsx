@@ -28,7 +28,7 @@ function SamplePlaces() {
           setPlace(placeData);
         } else {
           const response = await axios.get(
-            `http://localhost:4000/bookings/${id}`
+            `https://rentretreat.onrender.com/bookings/${id}`
           );
           setPlace(response.data);
           setBookingInfo(response.data);

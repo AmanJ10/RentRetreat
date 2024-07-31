@@ -22,9 +22,12 @@ function AccountPage() {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/bookings", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://rentretreat.onrender.com/bookings",
+        {
+          withCredentials: true,
+        }
+      );
       setBookings(response.data);
     } catch (err) {
       console.log("Error Fetching Bookings", err.message);
@@ -33,7 +36,7 @@ function AccountPage() {
 
   async function logout() {
     await axios.post(
-      "http://localhost:4000/logout",
+      "https://rentretreat.onrender.com/logout",
       {},
       { withCredentials: true }
     );

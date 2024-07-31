@@ -23,10 +23,13 @@ function LoginPage({ actionLabel, onSubmit, disabled }) {
   async function handleLoginSubmit(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4000/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://rentretreat.onrender.com/login",
+        {
+          email,
+          password,
+        }
+      );
       setUser(response.data);
       alert("Login Successful");
       setRedirect(true);
