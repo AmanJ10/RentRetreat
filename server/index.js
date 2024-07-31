@@ -19,8 +19,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
+    origin: ["https://rent-retreat.netlify.app", "http://localhost:5173"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
-    origin: "http://localhost:5173",
   })
 );
 
