@@ -63,7 +63,9 @@ app.post("/login", async (req, res) => {
           id: userDoc._id,
         },
         jwtSecret,
-        {},
+        {
+          expiresIn: "10h",
+        },
         (err, token) => {
           if (err) throw err;
           res
