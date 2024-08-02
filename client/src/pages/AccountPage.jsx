@@ -28,6 +28,7 @@ function AccountPage() {
           withCredentials: true,
         }
       );
+      console.log(response.data);
       setBookings(response.data);
     } catch (err) {
       console.log("Error Fetching Bookings", err.message);
