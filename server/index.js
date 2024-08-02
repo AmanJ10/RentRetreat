@@ -53,36 +53,43 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log(`Attempting login for email: ${email}`);
   const userDoc = await User.findOne({ email });
-  if (userDoc) {
-    const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      jwt.sign(
-        {
-          email: userDoc.email,
-          id: userDoc._id,
-        },
-        jwtSecret,
-        {
-          expiresIn: "10h",
-        },
-        (err, token) => {
-          if (err) throw err;
-          res
-            .cookie("token", token, {
-              httpOnly: true,
-              secure: true,
-              sameSite: "none",
-            })
-            .json(userDoc);
-        }
-      );
-    } else {
-      res.status(422).json("pass not ok");
-    }
-  } else {
-    res.json("not found");
+
+  if (!userDoc) {
+    console.log(`User not found for email: ${email}`);
+    return res.status(404).json("User not found");
   }
+
+  const passOk = bcrypt.compareSync(password, userDoc.password);
+  if (!passOk) {
+    console.log(`Password mismatch for email: ${email}`);
+    return res.status(422).json("Password not correct");
+  }
+
+  jwt.sign(
+    {
+      email: userDoc.email,
+      id: userDoc._id,
+    },
+    jwtSecret,
+    {
+      expiresIn: "10h",
+    },
+    (err, token) => {
+      if (err) {
+        console.error("JWT sign error:", err);
+        return res.status(500).json("Internal server error");
+      }
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        })
+        .json(userDoc);
+    }
+  );
 });
 
 app.get("/profile", (req, res) => {
