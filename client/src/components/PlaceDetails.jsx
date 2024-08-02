@@ -26,7 +26,6 @@ function PlaceDetails() {
           const response = await axios.get(
             `https://rentretreat.onrender.com/places/${id}`
           );
-          console.log(response.data);
           setPlace(response.data);
         }
       } catch (error) {
