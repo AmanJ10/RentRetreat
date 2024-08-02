@@ -63,7 +63,7 @@ function Price({ price, place, bookingInfo }) {
       beds: place.beds,
       bathrooms: place.bathrooms,
       tagLine: place.name,
-      images: place.image,
+      images: place.photos,
       title: place.title,
       address: place.address,
       placesPerks: place.perks,

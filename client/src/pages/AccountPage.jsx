@@ -5,7 +5,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import PlacesPage from "./PlacesPage";
 import Bookings from "../components/Bookings";
-import { places } from "./constants/index.jsx";
 
 function AccountPage() {
   const [redirect, setRedirect] = useState(null);
@@ -29,14 +28,8 @@ function AccountPage() {
           withCredentials: true,
         }
       );
-      const bookingsWithPhotos = response.data.map((booking) => {
-        const place = places.find((p) => p.id === booking.placeId);
-        return {
-          ...booking,
-          photos: place ? place.photos : [],
-        };
-      });
-      setBookings(bookingsWithPhotos);
+      console.log(response.data);
+      setBookings(response.data);
     } catch (err) {
       console.log("Error Fetching Bookings", err.message);
     }
