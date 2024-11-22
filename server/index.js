@@ -270,6 +270,10 @@ app.post("/api/create-checkout-session", async (req, res) => {
       tagLine,
     } = req.body;
 
+    if (!product || !quantity || !price) {
+      throw new Error("Missing required fields: product, quantity, or price");
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -279,7 +283,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
             product_data: {
               name: product.title,
             },
-            unit_amount: product.pricePerNight * 100,
+            unit_amount: price * 100,
           },
           quantity: quantity,
         },
