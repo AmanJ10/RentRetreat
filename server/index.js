@@ -204,7 +204,7 @@ app.post(
     }
 
     if (event.type === "checkout.session.completed") {
-      const metadata = paymentIntent.metadata;
+      const session = paymentIntent.metadata;
 
       try {
         const userData = JSON.parse(session.metadata.userData);
