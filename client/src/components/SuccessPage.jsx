@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
 
 const SuccessPage = () => {
   const [searchParams] = useSearchParams();
@@ -56,9 +55,8 @@ const SuccessPage = () => {
             to="/account/bookings"
             className="text-blue-500 hover:underline"
           >
-            {" "}
-            My Bookings{" "}
-          </Link>{" "}
+            My Bookings
+          </Link>
           section under your account.
         </p>
         <p className="text-sm text-gray-500">

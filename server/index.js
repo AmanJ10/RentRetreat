@@ -186,148 +186,6 @@ app.get("/places/:id", async (req, res) => {
   }
 });
 
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const sig = req.header("stripe-signature");
-    const stripeSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    let event;
-    console.log("Received Stripe Signature:", sig);
-    console.log("Stripe Webhook Secret:", stripeSecret);
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, stripeSecret);
-    } catch (err) {
-      console.log("Webhook signature failed");
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-
-      try {
-        const userData = JSON.parse(session.metadata.userData);
-        const placeId = session.metadata.placeId;
-        const price = session.metadata.price;
-        const bookingDetails = {
-          userId: userData.id,
-          placeId,
-          price,
-          checkIn: session.metadata.checkIn,
-          checkOut: session.metadata.checkOut,
-          guests: session.metadata.noOfGuests,
-          name: session.metadata.name,
-          phone: session.metadata.phone,
-          bedrooms: session.metadata.bedrooms,
-          beds: session.metadata.beds,
-          bathrooms: session.metadata.bathrooms,
-          address: session.metadata.address,
-          status: "Confirmed",
-        };
-
-        if (session.payment_status === "paid") {
-          const newBooking = new Booking(bookingDetails);
-          await newBooking.save();
-          console.log("Booking successfully added to the database!");
-        } else {
-          console.log("Payment failed or was not successful.");
-        }
-      } catch (err) {
-        console.error("Error processing booking:", err);
-        return res.status(500).send("Internal Server Error");
-      }
-    }
-
-    res.status(200).send("Event received successfully");
-  }
-);
-
-// app.post("/api/create-checkout-session", async (req, res) => {
-//   const { token } = req.cookies;
-
-//   if (!token) {
-//     return res.status(401).json("Unauthorized");
-//   }
-
-//   try {
-//     const userData = await getUserDataFromReq(req);
-
-//     const {
-//       product,
-//       quantity,
-//       name,
-//       description,
-//       title,
-//       images,
-//       placesPerks,
-//       extraInfo,
-//       checkIn,
-//       checkOut,
-//       noOfGuests,
-//       bedrooms,
-//       beds,
-//       address,
-//       bathrooms,
-//       price,
-//       phone,
-//       tagLine,
-//     } = req.body;
-
-//     console.log("Request Body:", req.body);
-
-//     if (!product || !quantity || !price) {
-//       throw new Error("Missing required fields: product, quantity, or price");
-//     }
-
-//     const session = await stripe.checkout.sessions.create({
-//       payment_method_types: ["card"],
-//       line_items: [
-//         {
-//           price_data: {
-//             currency: "inr",
-//             product_data: {
-//               name: product.title,
-//             },
-//             unit_amount: price * 100,
-//           },
-//           quantity: quantity,
-//         },
-//       ],
-//       mode: "payment",
-//       success_url: `https://rent-retreat.netlify.app/success?session_id={CHECKOUT_SESSION_ID}`,
-//       cancel_url: `https://rent-retreat.netlify.app/cancel`,
-//       metadata: {
-//         userData: JSON.stringify({ id: userData.id }),
-//         placeId: product.id,
-//         title,
-//         address,
-//         photos: JSON.stringify(images),
-//         description,
-//         perks: JSON.stringify(placesPerks),
-//         extraInfo,
-//         checkIn,
-//         checkOut,
-//         noOfGuests,
-//         bedrooms,
-//         beds,
-//         bathrooms,
-//         tagLine,
-//         name,
-//         phone,
-//         price,
-//       },
-//     });
-
-//     console.log("Stripe Session Created:", session.id);
-
-//     res.json({ id: session.id });
-//   } catch (error) {
-//     console.error("Error creating checkout session:", error);
-//     res.status(500).json("Internal Server Error");
-//   }
-// });
-
 app.post("/api/create-checkout-session", async (req, res) => {
   const { token } = req.cookies;
 
@@ -341,6 +199,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
       product,
       quantity,
       title,
+      description,
       images,
       placesPerks,
       extraInfo,
@@ -384,6 +243,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
         checkIn,
         checkOut,
         noOfGuests,
+        description,
         bedrooms,
         beds,
         bathrooms,

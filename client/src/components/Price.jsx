@@ -65,9 +65,6 @@ function Price({ price, place, bookingInfo }) {
 
     setError("");
 
-    // const stripe = await loadStripe(
-    //   "pk_test_51PeqAgF6sm5E0ZdmSWlryfA2TAlq0Cz4EwCx5hoTujFmQ5Rc7hfqZFfuFbXkhbGD8F2SGrn251I8GwHRJdEUs50700JiKn7gu8"
-    // );
     await initializeStripe();
 
     const body = {
