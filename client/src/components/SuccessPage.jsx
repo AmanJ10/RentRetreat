@@ -1,14 +1,42 @@
 import { useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const SuccessPage = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
+    async function verifySession() {
+      try {
+        const response = await fetch(
+          "https://rentretreat.onrender.com/api/verify-checkout-session",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ sessionId }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Booking status:", data);
+          alert("Booking successful!");
+        } else {
+          const errorData = await response.json();
+          console.error("Error verifying session:", errorData);
+          alert("Payment verification failed!");
+        }
+      } catch (error) {
+        console.error("Error verifying session:", error.message);
+        alert("Payment verification failed!");
+      }
+    }
+
     if (sessionId) {
-      // Optionally confirm booking details or perform additional actions
-      console.log("Payment successful, session ID:", sessionId);
+      verifySession();
     }
   }, [sessionId]);
 

@@ -243,6 +243,91 @@ app.post(
   }
 );
 
+// app.post("/api/create-checkout-session", async (req, res) => {
+//   const { token } = req.cookies;
+
+//   if (!token) {
+//     return res.status(401).json("Unauthorized");
+//   }
+
+//   try {
+//     const userData = await getUserDataFromReq(req);
+
+//     const {
+//       product,
+//       quantity,
+//       name,
+//       description,
+//       title,
+//       images,
+//       placesPerks,
+//       extraInfo,
+//       checkIn,
+//       checkOut,
+//       noOfGuests,
+//       bedrooms,
+//       beds,
+//       address,
+//       bathrooms,
+//       price,
+//       phone,
+//       tagLine,
+//     } = req.body;
+
+//     console.log("Request Body:", req.body);
+
+//     if (!product || !quantity || !price) {
+//       throw new Error("Missing required fields: product, quantity, or price");
+//     }
+
+//     const session = await stripe.checkout.sessions.create({
+//       payment_method_types: ["card"],
+//       line_items: [
+//         {
+//           price_data: {
+//             currency: "inr",
+//             product_data: {
+//               name: product.title,
+//             },
+//             unit_amount: price * 100,
+//           },
+//           quantity: quantity,
+//         },
+//       ],
+//       mode: "payment",
+//       success_url: `https://rent-retreat.netlify.app/success?session_id={CHECKOUT_SESSION_ID}`,
+//       cancel_url: `https://rent-retreat.netlify.app/cancel`,
+//       metadata: {
+//         userData: JSON.stringify({ id: userData.id }),
+//         placeId: product.id,
+//         title,
+//         address,
+//         photos: JSON.stringify(images),
+//         description,
+//         perks: JSON.stringify(placesPerks),
+//         extraInfo,
+//         checkIn,
+//         checkOut,
+//         noOfGuests,
+//         bedrooms,
+//         beds,
+//         bathrooms,
+//         tagLine,
+//         name,
+//         phone,
+//         price,
+//       },
+//     });
+
+//     console.log("Stripe Session Created:", session.id);
+
+//     res.json({ id: session.id });
+//   } catch (error) {
+//     console.error("Error creating checkout session:", error);
+//     res.status(500).json("Internal Server Error");
+//   }
+// });
+
 app.post("/api/create-checkout-session", async (req, res) => {
   const { token } = req.cookies;
 
@@ -256,8 +341,6 @@ app.post("/api/create-checkout-session", async (req, res) => {
     const {
       product,
       quantity,
-      name,
-      description,
       title,
       images,
       placesPerks,
@@ -274,12 +357,6 @@ app.post("/api/create-checkout-session", async (req, res) => {
       tagLine,
     } = req.body;
 
-    console.log("Request Body:", req.body);
-
-    if (!product || !quantity || !price) {
-      throw new Error("Missing required fields: product, quantity, or price");
-    }
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -289,22 +366,45 @@ app.post("/api/create-checkout-session", async (req, res) => {
             product_data: {
               name: product.title,
             },
-            unit_amount: price * 100,
+            unit_amount: product.pricePerNight * 100,
           },
           quantity: quantity,
         },
       ],
       mode: "payment",
       success_url: `https://rent-retreat.netlify.app/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://rent-retreat.netlify.app/cancel`,
+      cancel_url: `https://rent-retreat.netlify.app/cancel?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
-        userData: JSON.stringify({ id: userData.id }),
+        userId: userData.id,
         placeId: product.id,
+      },
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).json("Internal Server Error");
+  }
+});
+
+app.post("/api/verify-checkout-session", async (req, res) => {
+  const { sessionId } = req.body;
+
+  if (!sessionId) {
+    return res.status(400).json({ error: "Session ID is required" });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status === "paid") {
+      const { userId, placeId } = session.metadata;
+      const {
         title,
         address,
-        photos: JSON.stringify(images),
+        photos,
         description,
-        perks: JSON.stringify(placesPerks),
+        perks,
         extraInfo,
         checkIn,
         checkOut,
@@ -313,17 +413,37 @@ app.post("/api/create-checkout-session", async (req, res) => {
         beds,
         bathrooms,
         tagLine,
-        name,
         phone,
         price,
-      },
-    });
+      } = req.body;
 
-    console.log("Stripe Session Created:", session.id);
+      await Booking.create({
+        user: userId,
+        place: placeId,
+        title,
+        address,
+        photos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        noOfGuests,
+        bedrooms,
+        beds,
+        bathrooms,
+        tagLine,
+        phone,
+        price,
+        sessionId,
+      });
 
-    res.json({ id: session.id });
+      return res.status(200).json({ message: "Booking added successfully" });
+    } else {
+      return res.status(400).json({ error: "Payment was not successful" });
+    }
   } catch (error) {
-    console.error("Error creating checkout session:", error);
+    console.error("Error verifying checkout session:", error);
     res.status(500).json("Internal Server Error");
   }
 });
