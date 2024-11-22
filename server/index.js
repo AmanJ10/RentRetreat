@@ -191,14 +191,13 @@ app.post(
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const sig = req.header("stripe-signature");
+    const stripeSecret = process.env.STRIPE_WEBHOOK_SECRET;
     let event;
+    console.log("Received Stripe Signature:", sig);
+    console.log("Stripe Webhook Secret:", stripeSecret);
 
     try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
+      event = stripe.webhooks.constructEvent(req.body, sig, stripeSecret);
     } catch (err) {
       console.log("Webhook signature failed");
       return res.status(400).send(`Webhook Error: ${err.message}`);
