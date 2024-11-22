@@ -337,7 +337,6 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
   try {
     const userData = await getUserDataFromReq(req);
-
     const {
       product,
       quantity,
@@ -377,6 +376,20 @@ app.post("/api/create-checkout-session", async (req, res) => {
       metadata: {
         userId: userData.id,
         placeId: product.id,
+        title,
+        address,
+        images: JSON.stringify(images),
+        placesPerks: JSON.stringify(placesPerks),
+        extraInfo,
+        checkIn,
+        checkOut,
+        noOfGuests,
+        bedrooms,
+        beds,
+        bathrooms,
+        tagLine,
+        phone,
+        price,
       },
     });
 
@@ -398,43 +411,25 @@ app.post("/api/verify-checkout-session", async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === "paid") {
-      const { userId, placeId } = session.metadata;
-      const {
-        title,
-        address,
-        photos,
-        description,
-        perks,
-        extraInfo,
-        checkIn,
-        checkOut,
-        noOfGuests,
-        bedrooms,
-        beds,
-        bathrooms,
-        tagLine,
-        phone,
-        price,
-      } = req.body;
+      const metadata = session.metadata;
 
       await Booking.create({
-        user: userId,
-        place: placeId,
-        title,
-        address,
-        photos,
-        description,
-        perks,
-        extraInfo,
-        checkIn,
-        checkOut,
-        noOfGuests,
-        bedrooms,
-        beds,
-        bathrooms,
-        tagLine,
-        phone,
-        price,
+        user: metadata.userId,
+        place: metadata.placeId,
+        title: metadata.title,
+        address: metadata.address,
+        photos: JSON.parse(metadata.images),
+        perks: JSON.parse(metadata.placesPerks),
+        extraInfo: metadata.extraInfo,
+        checkIn: metadata.checkIn,
+        checkOut: metadata.checkOut,
+        noOfGuests: metadata.noOfGuests,
+        bedrooms: metadata.bedrooms,
+        beds: metadata.beds,
+        bathrooms: metadata.bathrooms,
+        tagLine: metadata.tagLine,
+        phone: metadata.phone,
+        price: metadata.price,
         sessionId,
       });
 
