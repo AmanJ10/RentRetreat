@@ -192,6 +192,7 @@ app.post(
   async (req, res) => {
     const sig = req.header("stripe-signature");
     let event;
+
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
@@ -204,7 +205,7 @@ app.post(
     }
 
     if (event.type === "checkout.session.completed") {
-      const session = paymentIntent.metadata;
+      const session = event.data.object;
 
       try {
         const userData = JSON.parse(session.metadata.userData);
@@ -226,44 +227,19 @@ app.post(
           status: "Confirmed",
         };
 
-        // try {
-        //   const userData = JSON.parse(metadata.userData);
-        //   await Booking.create({
-        //     user: userData.id,
-        //     place: metadata.placeId,
-        //     title: metadata.title,
-        //     address: metadata.address,
-        //     photos: JSON.parse(metadata.photos),
-        //     description: metadata.description,
-        //     perks: JSON.parse(metadata.placesPerks),
-        //     extraInfo: metadata.extraInfo,
-        //     checkIn: metadata.checkIn,
-        //     checkOut: metadata.checkOut,
-        //     noOfGuests: metadata.noOfGuests,
-        //     bedrooms: metadata.bathrooms,
-        //     beds: metadata.beds,
-        //     bathrooms: metadata.bathrooms,
-        //     tagLine: metadata.tagLine,
-        //     name: metadata.name,
-        //     phone: metadata.phone,
-        //     price: metadata.price,
-        //     sessionId: paymentIntent.id,
-        //   });
-
         if (session.payment_status === "paid") {
-          // Proceed to save the booking to the database
           const newBooking = new Booking(bookingDetails);
           await newBooking.save();
+          console.log("Booking successfully added to the database!");
         } else {
           console.log("Payment failed or was not successful.");
         }
-
-        console.log("Booking successfully added to the database!");
       } catch (err) {
         console.error("Error processing booking:", err);
         return res.status(500).send("Internal Server Error");
       }
     }
+
     res.status(200).send("Event received successfully");
   }
 );
