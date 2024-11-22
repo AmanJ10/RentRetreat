@@ -46,6 +46,16 @@ function Price({ price, place, bookingInfo }) {
   const totalDays = calculateDaysDifference();
   const totalPrice = totalDays * price;
 
+  let stripe;
+
+  const initializeStripe = async () => {
+    if (!stripe) {
+      stripe = await loadStripe(
+        "pk_test_51PeqAgF6sm5E0ZdmSWlryfA2TAlq0Cz4EwCx5hoTujFmQ5Rc7hfqZFfuFbXkhbGD8F2SGrn251I8GwHRJdEUs50700JiKn7gu8"
+      );
+    }
+  };
+
   const makePayment = async (e) => {
     e.preventDefault();
     if (!name || !phone || !noOfGuests || totalDays <= 0) {
@@ -55,9 +65,10 @@ function Price({ price, place, bookingInfo }) {
 
     setError("");
 
-    const stripe = await loadStripe(
-      "pk_test_51PeqAgF6sm5E0ZdmSWlryfA2TAlq0Cz4EwCx5hoTujFmQ5Rc7hfqZFfuFbXkhbGD8F2SGrn251I8GwHRJdEUs50700JiKn7gu8"
-    );
+    // const stripe = await loadStripe(
+    //   "pk_test_51PeqAgF6sm5E0ZdmSWlryfA2TAlq0Cz4EwCx5hoTujFmQ5Rc7hfqZFfuFbXkhbGD8F2SGrn251I8GwHRJdEUs50700JiKn7gu8"
+    // );
+    await initializeStripe();
 
     const body = {
       product: place,
@@ -91,7 +102,14 @@ function Price({ price, place, bookingInfo }) {
           credentials: "include",
         }
       );
+      if (!res.ok) {
+        throw new Error(`Failed to create checkout session: ${res.statusText}`);
+      }
+
       const session = await res.json();
+      if (!session.id) {
+        throw new Error("Session ID not returned from server.");
+      }
 
       const result = await stripe.redirectToCheckout({
         sessionId: session.id,
