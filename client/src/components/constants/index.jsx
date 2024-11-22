@@ -226,7 +226,7 @@ const places = [
     name: "Velhe, Torna-Rajgad, India",
     category: "Amazing Views",
     description:
-      "Looking for a romantic and couple-friendly getaway in Panchgani? Look no further than The Glasshouse! This charming glass room offers cosy furnishings and beautiful French windows, as well as access to modern amenities and an expansive outdoor space. With an orchard and lawn, guests can enjoy activities like fruit picking, yoga, and sports. Book our private villa in the same complex for your next family gathering or romantic retreat. The space The split-level home has a living room with a TV set, dining area, kitchen, and 1 bedroom on the ground floor, and 2 bedrooms and a living room on the first floor. -With modern amenities, all the bedrooms with poster beds have ensuite bathrooms and pleasant views of the surroundings. -The homeowner’s know-how in agriculture is reflected in the villa's organic farming. A wide range of organically grown crops, pulses, vegetables, fruits, and flowering plants are grown here. Fancy some vegetable picking? -Enjoy veg Maharashtrian and North Indian meals prepared mostly using home-grown pulses and veggies at this cozy retreat for families. The caretaker can also prepare non-veg meals in a separate kitchen.",
+      "Looking for a romantic and couple-friendly getaway in Panchgani? Look no further than The Glasshouse! This charming glass room offers cosy furnishings and beautiful French windows, as well as access to modern amenities and an expansive outdoor space. ",
     photos: [
       amazingviews1,
       amazingviews3,
@@ -254,7 +254,7 @@ const places = [
     name: "Honeychilk Palace Breakfast Wifi Lawn",
     category: "Amazing Views",
     description:
-      "Escape the hustle and bustle of the city and immerse yourself in the beauty of traditional South Indian architecture at Honeychilk Palace, an epitome and tradition and luxury near Bangalore. As you step through the unique red brick facade, you'll be transported to a world of rustic old-world charm, with interiors that exude warmth and character. While you lounge on the beautiful lawns and take in the South Indian landscape, don't forget to appreciate the enchanting ambiance that surrounds you.The space The traditional architecture of this home seamlessly blends with its modern amenities, ensuring a comfortable and luxurious stay. Every element of this home has been carefully chosen to represent the rich culture and tradition of the South Indian locale in order to provide a truly authentic South Indian experience. You will be made to feel welcome by the staff's cordial South Indian hospitality. This opulent mansion has plenty to offer everyone, whether you're planning a family holiday or a romantic trip. You can also visit the bustling metropolis of Bangalore during the day, and in the evenings retire to the tranquility of this abode.",
+      "Escape the hustle and bustle of the city and immerse yourself in the beauty of traditional South Indian architecture at Honeychilk Palace, an epitome and tradition and luxury near Bangalore. As you step through the unique red brick facade, you'll be transported to a world of rustic old-world charm, with interiors that exude warmth and character.",
     photos: [
       amazingviews2,
       amazingviews4,

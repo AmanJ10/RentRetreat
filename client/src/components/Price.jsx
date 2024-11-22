@@ -103,7 +103,10 @@ function Price({ price, place, bookingInfo }) {
         }
       );
       if (!res.ok) {
-        throw new Error(`Failed to create checkout session: ${res.statusText}`);
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Failed to create checkout session: ${errorText}`);
+        }
       }
 
       const session = await res.json();

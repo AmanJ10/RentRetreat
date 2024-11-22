@@ -270,6 +270,8 @@ app.post("/api/create-checkout-session", async (req, res) => {
       tagLine,
     } = req.body;
 
+    console.log("Request Body:", req.body);
+
     if (!product || !quantity || !price) {
       throw new Error("Missing required fields: product, quantity, or price");
     }
@@ -312,6 +314,8 @@ app.post("/api/create-checkout-session", async (req, res) => {
         price,
       },
     });
+
+    console.log("Stripe Session Created:", session.id);
 
     res.json({ id: session.id });
   } catch (error) {
