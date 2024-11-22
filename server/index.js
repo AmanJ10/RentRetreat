@@ -186,6 +186,59 @@ app.get("/places/:id", async (req, res) => {
   }
 });
 
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.header("stripe-signature");
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.log("Webhook signature failed");
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object;
+      const metadata = paymentIntent.metadata;
+
+      try {
+        const userData = JSON.parse(metadata.userData);
+        await Booking.create({
+          user: userData.id,
+          place: metadata.placeId,
+          title: metadata.title,
+          address: metadata.address,
+          photos: JSON.parse(metadata.photos),
+          description: metadata.description,
+          perks: JSON.parse(metadata.placesPerks),
+          extraInfo: metadata.extraInfo,
+          checkIn: metadata.checkIn,
+          checkOut: metadata.checkOut,
+          noOfGuests: metadata.noOfGuests,
+          bedrooms: metadata.bathrooms,
+          beds: metadata.beds,
+          bathrooms: metadata.bathrooms,
+          tagLine: metadata.tagLine,
+          name: metadata.name,
+          phone: metadata.phone,
+          price: metadata.price,
+          sessionId: paymentIntent.id,
+        });
+        console.log("Booking finalized successfully");
+      } catch (err) {
+        console.log("Error finalizing Booking", err.message);
+      }
+    }
+    res.status(200).send("Webhook received");
+  }
+);
+
 app.post("/api/create-checkout-session", async (req, res) => {
   const { token } = req.cookies;
 
@@ -234,28 +287,26 @@ app.post("/api/create-checkout-session", async (req, res) => {
       mode: "payment",
       success_url: `https://rent-retreat.netlify.app/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `https://rent-retreat.netlify.app/cancel`,
-    });
-
-    await Booking.create({
-      user: userData.id,
-      place: product.id,
-      title,
-      address,
-      photos: images,
-      description,
-      perks: placesPerks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      noOfGuests,
-      bedrooms,
-      beds,
-      bathrooms,
-      tagLine,
-      name,
-      phone,
-      price,
-      sessionId: session.id,
+      metadata: {
+        userData: JSON.stringify({ id: userData.id }),
+        placeId: product.id,
+        title,
+        address,
+        photos: JSON.stringify(images),
+        description,
+        perks: JSON.stringify(placesPerks),
+        extraInfo,
+        checkIn,
+        checkOut,
+        noOfGuests,
+        bedrooms,
+        beds,
+        bathrooms,
+        tagLine,
+        name,
+        phone,
+        price,
+      },
     });
 
     res.json({ id: session.id });

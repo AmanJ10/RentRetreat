@@ -8,6 +8,8 @@ function Price({ price, place, bookingInfo }) {
   const [phone, setPhone] = useState("");
   const [noOfGuests, setGuests] = useState("");
 
+  const [error, setError] = useState("");
+
   const [dateRange, setDateRange] = useState({
     start: parseDate("2024-04-01"),
     end: parseDate("2024-04-08"),
@@ -46,6 +48,13 @@ function Price({ price, place, bookingInfo }) {
 
   const makePayment = async (e) => {
     e.preventDefault();
+    if (!name || !phone || !noOfGuests || totalDays <= 0) {
+      setError("Please fill all the fields correctly.");
+      return;
+    }
+
+    setError("");
+
     const stripe = await loadStripe(
       "pk_test_51PeqAgF6sm5E0ZdmSWlryfA2TAlq0Cz4EwCx5hoTujFmQ5Rc7hfqZFfuFbXkhbGD8F2SGrn251I8GwHRJdEUs50700JiKn7gu8"
     );
@@ -144,6 +153,11 @@ function Price({ price, place, bookingInfo }) {
                 Total Price: ₹{totalPrice.toFixed(2)}
               </h2>
             </div>
+            {error && (
+              <div className="text-red-500 text-center mb-4">
+                <p>{error}</p>
+              </div>
+            )}
             <form className="ml-3 mr-3" onSubmit={makePayment}>
               <h2 className="text-2xl mt-4">Name</h2>
               <input
