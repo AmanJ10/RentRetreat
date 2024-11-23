@@ -9,6 +9,7 @@ import Description from "./Description";
 import HouseRules from "./HouseRules";
 import { perksList } from "./constants/index.jsx";
 import ImageSlider from "./ImageSlider";
+import Price from "./Price.jsx";
 
 function PlaceDetails() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ function PlaceDetails() {
   const { user } = useUsers();
   const [isImageSliderOpen, setImageSliderOpen] = useState(false);
   const [currentImages, setCurrentImages] = useState([]);
+  const [bookingInfo, setBookingInfo] = useState(null);
   const { isModalOpen, handleOpen, handleClose, modalType } = useLogin();
 
   useEffect(() => {
@@ -27,6 +29,12 @@ function PlaceDetails() {
             `https://rentretreat.onrender.com/places/${id}`
           );
           setPlace(response.data);
+        } else {
+          const response = await axios.get(
+            `https://rentretreat.onrender.com/bookings/${id}`
+          );
+          setPlace(response.data);
+          setBookingInfo(response.data);
         }
       } catch (error) {
         console.error("Error fetching place details:", error);
@@ -156,6 +164,26 @@ function PlaceDetails() {
       </div>
       <div className="my-4 border-t border-gray-200"></div>
       <HouseRules place={place} />
+
+      {user ? (
+        <Price
+          price={place.pricePerNight}
+          place={place}
+          bookingInfo={bookingInfo}
+        />
+      ) : (
+        <>
+          <h1 className="text-3xl pt-10 pb-5 text-center font-bold text-gray-800 leading-relaxed cursor-pointer">
+            Book Now
+          </h1>
+          <h2
+            className="text-lg font-bold text-center underline text-gray-800 leading-relaxed cursor-pointer"
+            onClick={() => handleOpen("login")}
+          >
+            Please Login first
+          </h2>
+        </>
+      )}
 
       <ImageSlider
         images={currentImages}

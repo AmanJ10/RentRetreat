@@ -173,6 +173,20 @@ app.get("/places", async (req, res) => {
   });
 });
 
+app.get("/allplaces", async (req, res) => {
+  try {
+    const places = await Place.find();
+    res.json(places);
+  } catch (e) {
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while fetching places.",
+        details: e.message,
+      });
+  }
+});
+
 app.get("/places/:id", async (req, res) => {
   try {
     const place = await Place.findById(req.params.id);
