@@ -24,8 +24,8 @@ function App() {
         <Route path="/account/:subpage?" element={<AccountPage />} />
         <Route path="/account/:subpage/:action" element={<AccountPage />} />
         <Route path="/places/:id" element={<PlaceDetails />} />
-        <Route path="/bookings/:id" element={<SamplePlaces />} />
-        <Route path="/splaces/:id" element={<SamplePlaces />} />
+        <Route path="/bookings/:id" element={<PlaceDetails />} />
+        {/* <Route path="/splaces/:id" element={<SamplePlaces />} /> */}
         <Route path="/category" element={<Categories />} />
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<Cancel />} />

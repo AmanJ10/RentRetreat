@@ -178,20 +178,23 @@ app.get("/allplaces", async (req, res) => {
     const places = await Place.find();
     res.json(places);
   } catch (e) {
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while fetching places.",
-        details: e.message,
-      });
+    res.status(500).json({
+      error: "An error occurred while fetching places.",
+      details: e.message,
+    });
   }
 });
 
 app.get("/places/:id", async (req, res) => {
   try {
+    // const place = await Place.findById(req.params.id).populate("owner");
+    // console.log(req.params.id);
     const place = await Place.findById(req.params.id);
-    if (place) {
-      res.json(place);
+    const ownerId = place.owner;
+    const user = await User.findById(ownerId);
+
+    if (place && user) {
+      res.json({ userDoc: user, places: place });
     } else {
       res.status(404).json({ message: "Place not found" });
     }

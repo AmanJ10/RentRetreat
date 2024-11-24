@@ -86,7 +86,7 @@ function PlacesPage() {
       const response = await axios.get(
         "https://rentretreat.onrender.com/places"
       );
-      console.log("Places fetched:", response.data);
+      // console.log("Places fetched:", response.data);
       setPlaces(response.data);
     } catch (error) {
       console.error("Error fetching places:", error);

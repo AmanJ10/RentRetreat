@@ -19,6 +19,7 @@ function PlaceDetails() {
   const [isImageSliderOpen, setImageSliderOpen] = useState(false);
   const [currentImages, setCurrentImages] = useState([]);
   const [bookingInfo, setBookingInfo] = useState(null);
+  const [name, setName] = useState();
   const { isModalOpen, handleOpen, handleClose, modalType } = useLogin();
 
   useEffect(() => {
@@ -28,7 +29,9 @@ function PlaceDetails() {
           const response = await axios.get(
             `https://rentretreat.onrender.com/places/${id}`
           );
-          setPlace(response.data);
+          console.log(response.data);
+          setName(response.data.userDoc.name);
+          setPlace(response.data.places);
         } else {
           const response = await axios.get(
             `https://rentretreat.onrender.com/bookings/${id}`
@@ -118,7 +121,9 @@ function PlaceDetails() {
           <Avatar />
         </div>
         <p className="p-2 text-lg text-gray-800 leading-relaxed">
-          Hosted by {user ? user.name : "Loading..."}
+          {/* {console.log(place.owner.name)} */}
+          {/* // {console.log("Fetched Place Data:", place)} } Hosted by{" "} */}
+          {name ? name : "Unknown Host"}
         </p>
       </div>
       <div className="my-4 border-t border-gray-200"></div>

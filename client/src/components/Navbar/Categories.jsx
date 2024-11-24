@@ -48,8 +48,8 @@ function Categories() {
       const response = await axios.get(
         "https://rentretreat.onrender.com/allplaces"
       );
-      console.log(response);
-      console.log("Places fetched:", response.data);
+      // console.log(response);
+      // console.log("Places fetched:", response.data);
       setAllPlaces(response.data);
     } catch (error) {
       console.error("Error fetching places:", error);

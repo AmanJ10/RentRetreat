@@ -10,9 +10,18 @@ function Price({ price, place, bookingInfo }) {
 
   const [error, setError] = useState("");
 
+  // const [dateRange, setDateRange] = useState({
+  //   start: parseDate("2024-04-01"),
+  //   end: parseDate("2024-04-08"),
+  // });
+
+  const today = new Date();
+  const oneDayLater = new Date(today);
+  oneDayLater.setDate(today.getDate() + 1);
+
   const [dateRange, setDateRange] = useState({
-    start: parseDate("2024-04-01"),
-    end: parseDate("2024-04-08"),
+    start: parseDate(today.toISOString().split("T")[0]), // Format to YYYY-MM-DD
+    end: parseDate(oneDayLater.toISOString().split("T")[0]),
   });
 
   const handleNameChange = (e) => setName(e.target.value);
