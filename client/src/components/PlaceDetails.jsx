@@ -123,7 +123,7 @@ function PlaceDetails() {
         <p className="p-2 text-lg text-gray-800 leading-relaxed">
           {/* {console.log(place.owner.name)} */}
           {/* // {console.log("Fetched Place Data:", place)} } Hosted by{" "} */}
-          {name ? name : "Unknown Host"}
+          Hosted By: {name ? name : "Unknown Host"}
         </p>
       </div>
       <div className="my-4 border-t border-gray-200"></div>
